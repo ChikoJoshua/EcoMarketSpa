@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ecomarketapp.R
+import com.example.ecomarketapp.ui.viewmodel.CarritoViewModel
 
 data class Producto(
     val id: Int,
@@ -23,10 +25,11 @@ data class Producto(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductosScreen() {
-    // Estado del carrito (lista mutable)
-    val carrito = remember { mutableStateListOf<Producto>() }
-
+fun ProductosScreen(
+    viewModel: CarritoViewModel = viewModel(),
+    onCarritoClick: () -> Unit = {}
+) {
+    val carrito = viewModel.carrito
     val productos = listOf(
         Producto(1, "Aceite de Oliva", 7900.0, R.drawable.aceite),
         Producto(2, "Café Orgánico", 6500.0, R.drawable.cafe),
@@ -44,18 +47,20 @@ fun ProductosScreen() {
             TopAppBar(
                 title = { Text("Productos EcoMarket") },
                 actions = {
-                    // Icono del carrito con contador
-                    BadgedBox(
-                        badge = {
-                            if (carrito.isNotEmpty()) {
-                                Badge { Text("${carrito.size}") }
+                    // Ícono del carrito con contador
+                    IconButton(onClick = onCarritoClick) {
+                        BadgedBox(
+                            badge = {
+                                if (carrito.isNotEmpty()) {
+                                    Badge { Text("${carrito.size}") }
+                                }
                             }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Carrito"
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = "Carrito"
-                        )
                     }
                 }
             )
@@ -94,7 +99,7 @@ fun ProductosScreen() {
                             Text(text = "$${producto.precio}", style = MaterialTheme.typography.bodyLarge)
                         }
                         Button(
-                            onClick = { carrito.add(producto) }
+                            onClick = { viewModel.agregarProducto(producto) }
                         ) {
                             Text("Agregar")
                         }
