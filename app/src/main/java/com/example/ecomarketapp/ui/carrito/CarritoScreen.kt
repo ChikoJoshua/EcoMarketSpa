@@ -1,8 +1,6 @@
 package com.example.ecomarketapp.ui.carrito
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -17,6 +15,8 @@ fun CarritoScreen(
     viewModel: CarritoViewModel,
     onVolverClick: () -> Unit
 ) {
+    val carrito = viewModel.carrito
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -28,27 +28,38 @@ fun CarritoScreen(
                             contentDescription = "Volver"
                         )
                     }
-                },
-                actions = {
-                    Button(onClick = { viewModel.vaciarCarrito() }) {
-                        Text("Vaciar")
-                    }
                 }
             )
+        },
+        bottomBar = {
+            if (carrito.isNotEmpty()) {
+                Button(
+                    onClick = { viewModel.finalizarCompra() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text("Finalizar Compra")
+                }
+            }
         }
     ) { padding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            if (viewModel.carrito.isEmpty()) {
-                item { Text("El carrito está vacío.") }
+            if (carrito.isEmpty()) {
+                Text("Tu carrito está vacío.")
             } else {
-                items(viewModel.carrito) { producto ->
-                    Text("${producto.nombre} - $${producto.precio}")
+                carrito.forEach { producto ->
+                    Text("- ${producto.nombre}: $${producto.precio}")
                 }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Total: $${carrito.sumOf { it.precio }}",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
