@@ -45,7 +45,6 @@ fun ProductosScreen(
             TopAppBar(
                 title = { Text("Productos EcoMarket") },
                 actions = {
-                    // Icono del carrito con contador
                     BadgedBox(
                         badge = {
                             if (viewModel.carrito.isNotEmpty()) {
@@ -88,6 +87,7 @@ fun ProductosScreen(
                             modifier = Modifier.size(64.dp),
                             contentScale = ContentScale.Crop
                         )
+
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -102,6 +102,7 @@ fun ProductosScreen(
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
+
                         Button(onClick = { viewModel.agregarAlCarrito(producto) }) {
                             Text("Agregar")
                         }
@@ -111,5 +112,3 @@ fun ProductosScreen(
         }
     }
 }
-
-private fun CarritoViewModel.agregarAlCarrito(producto: Producto) {}

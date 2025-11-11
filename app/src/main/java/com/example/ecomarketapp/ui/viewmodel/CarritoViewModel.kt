@@ -7,12 +7,8 @@ import com.example.ecomarketapp.ui.producto.Producto
 class CarritoViewModel : ViewModel() {
     val carrito = mutableStateListOf<Producto>()
 
-    fun agregarProducto(producto: Producto) {
+    fun agregarAlCarrito(producto: Producto) {
         carrito.add(producto)
-    }
-
-    fun eliminarProducto(producto: Producto) {
-        carrito.remove(producto)
     }
 
     fun vaciarCarrito() {
