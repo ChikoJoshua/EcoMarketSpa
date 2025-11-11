@@ -1,18 +1,12 @@
 package com.example.ecomarketapp.ui.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.ecomarketapp.ui.producto.Producto
 
-data class Pedido(
-    val id: Int,
-    val productos: List<Producto>,
-    val total: Double
-)
-
 class CarritoViewModel : ViewModel() {
-    private var contadorPedidos = 1
-    val carrito = mutableListOf<Producto>()
-    val pedidos = mutableListOf<Pedido>()
+    val carrito = mutableStateListOf<Producto>()
+    val pedidos = mutableStateListOf<List<Producto>>() // historial de compras
 
     fun agregarAlCarrito(producto: Producto) {
         carrito.add(producto)
@@ -20,13 +14,8 @@ class CarritoViewModel : ViewModel() {
 
     fun finalizarCompra() {
         if (carrito.isNotEmpty()) {
-            val nuevoPedido = Pedido(
-                id = contadorPedidos++,
-                productos = carrito.toList(),
-                total = carrito.sumOf { it.precio }
-            )
-            pedidos.add(nuevoPedido)
-            carrito.clear()
+            pedidos.add(carrito.toList()) // guarda la compra
+            carrito.clear() // vacía el carrito
         }
     }
 }
